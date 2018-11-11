@@ -42,7 +42,7 @@ Example run:
 docker run --name extractor -d \
   -v /opt/traefik:/app/data \
   -v ./certs:/app/certs \
-  -v /var/run/docker.socket:/var/run/docker.socket \
+  -v /var/run/docker.socket:/var/run/docker.sock \
   snowmb/traefik-certificate-extractor 
 ```
 Mount the whole folder containing the traefik certificate file (`acme.json`) as `/app/data`. The extracted certificates are going to be written to `/app/certs`.
