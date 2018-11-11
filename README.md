@@ -43,7 +43,7 @@ docker run --name extractor -d \
   -v /opt/traefik:/app/data \
   -v ./certs:/app/certs \
   -v /var/run/docker.socket:/var/run/docker.sock \
-  snowmb/traefik-certificate-extractor 
+  snowmb/traefik-certificate-extractor -r
 ```
 Mount the whole folder containing the traefik certificate file (`acme.json`) as `/app/data`. The extracted certificates are going to be written to `/app/certs`.
 The docker socket is used to find any containers with this label: `com.github.SnowMB.traefik-certificate-extractor.restart_domain=<DOMAIN>`.
