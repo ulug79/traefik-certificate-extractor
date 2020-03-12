@@ -92,7 +92,7 @@ def createCerts(args):
     names = []
 
     for k in data:
-        print(k)
+        # print(k)
         resolvers.append(data[k])
 
     for resolver in resolvers:
@@ -102,7 +102,7 @@ def createCerts(args):
 
     # Loop over all certificates
         for c in resolver['Certificates']:
-            pprint(c)
+            # pprint(c)
             name = c['domain']['main']
             privatekey = c['key']
             fullchain = c['certificate']
