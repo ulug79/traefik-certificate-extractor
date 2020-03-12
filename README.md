@@ -1,6 +1,6 @@
 # Traefik Certificate Extractor
 
-Forked from [DanielHuisman/traefik-certificate-extractor](https://github.com/DanielHuisman/traefik-certificate-extractor)
+Forked from [SnowMB/traefik-certificate-extractor](https://github.com/SnowMB/traefik-certificate-extractor)
 
 Tool to extract Let's Encrypt certificates from Traefik's ACME storage file. Can automatically restart containers using the docker API.
 
@@ -9,7 +9,7 @@ Note: This version differs from original in that:
 * Support for ACME v1 has been removed.  You must be using the acme_v2 url in your resolver(s)
 * Added support for multiple resolvers
 * An initial dump of the certs will be performed before starting to watch the acme.json file for changes
-* _**Not thoroughly tested**_
+* _**Not thoroughly tested**_. Specifically, I don't know if SANs work since I don't use them.
 
 ## Installation
 ```shell
@@ -43,34 +43,8 @@ optional arguments:
 Default file is `./data/acme.json`. The output directories are `./certs` and `./certs_flat`.
 
 ## Docker
-There is a Docker image available for this tool: [snowmb/traefik-certificate-extractor](https://hub.docker.com/r/snowmb/traefik-certificate-extractor/).
-Example run:
-```shell
-docker run --name extractor -d \
-  -v /opt/traefik:/app/data \
-  -v ./certs:/app/certs \
-  -v /var/run/docker.socket:/var/run/docker.sock \
-  snowmb/traefik-certificate-extractor -r
-```
-Mount the whole folder containing the traefik certificate file (`acme.json`) as `/app/data`. The extracted certificates are going to be written to `/app/certs`.
-The docker socket is used to find any containers with this label: `com.github.SnowMB.traefik-certificate-extractor.restart_domain=<DOMAIN>`.
-If the domains of an extracted certificate and the restart domain matches, the container is restarted. Multiple domains can be given seperated by `,`.
 
-You can easily use `docker-compose` to integrate this container into your setup:
-
-```yaml
-...
-services:
-  certs:
-     image: snowmb/traefik-certificate-extractor
-     volumes:
-      - path/to/acme.json:/app/data/acme.json:ro
-      - certs:/app/certs:rw
-      - /var/run/docker.sock:/var/run/docker.sock
-     command: -r --include example.com
-     restart: always
-```
-
+There is no image on hub.docker.com for this fork. Feel free to build your own by cloning this repository and using the included Dockerfile.  It ought to work. Maybe.
 
 ## Output
 ```
