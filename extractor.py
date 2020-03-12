@@ -11,7 +11,7 @@ from base64 import b64decode
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from pathlib import Path
-
+from pprint import pprint
 
 class PathType(object):
     def __init__(self, exists=True, type='file', dash_ok=True):
@@ -88,85 +88,85 @@ def restartContainerWithDomains(domains):
 def createCerts(args):
     # Read JSON file
     data = json.loads(open(args.certificate).read())
-
-    # Determine ACME version
-    acme_version = 2 if 'acme-v02' in data['Account']['Registration']['uri'] else 1
-
-    # Find certificates
-    if acme_version == 1:
-        certs = data['DomainsCertificate']['Certs']
-    elif acme_version == 2:
-        certs = data['Certificates']
-
-    # Loop over all certificates
+    resolvers = []
     names = []
 
-    for c in certs:
-        if acme_version == 1:
-            name = c['Certificate']['Domain']
-            privatekey = c['Certificate']['PrivateKey']
-            fullchain = c['Certificate']['Certificate']
-            sans = c['Domains']['SANs']
-        elif acme_version == 2:
-            name = c['Domain']['Main']
-            privatekey = c['Key']
-            fullchain = c['Certificate']
-            sans = c['Domain']['SANs']
+    for k in data:
+        print(k)
+        resolvers.append(data[k])
 
-        if (args.include and name not in args.include) or (args.exclude and name in args.exclude):
-            continue
+    for resolver in resolvers:
+        if 'Certificates' not in resolver.keys():
+            print('Unable to locate account or certificates in json')
+            return
 
-        # Decode private key, certificate and chain
-        privatekey = b64decode(privatekey).decode('utf-8')
-        fullchain = b64decode(fullchain).decode('utf-8')
-        start = fullchain.find('-----BEGIN CERTIFICATE-----', 1)
-        cert = fullchain[0:start]
-        chain = fullchain[start:]
-
-        if not args.dry:
-            # Create domain     directory if it doesn't exist
-            directory = Path(args.directory)
-            if not directory.exists():
-                directory.mkdir()
-
-            if args.flat:
-                # Write private key, certificate and chain to flat files
-                with (directory / name + '.key').open('w') as f:
-                    f.write(privatekey)
-                with (directory / name + '.crt').open('w') as f:
-                    f.write(fullchain)
-                with (directory / name + '.chain.pem').open('w') as f:
-                    f.write(chain)
-
-                if sans:
-                    for name in sans:
-                        with (directory / name + '.key').open('w') as f:
-                            f.write(privatekey)
-                        with (directory / name + '.crt').open('w') as f:
-                            f.write(fullchain)
-                        with (directory / name + '.chain.pem').open('w') as f:
-                            f.write(chain)
+    # Loop over all certificates
+        for c in resolver['Certificates']:
+            pprint(c)
+            name = c['domain']['main']
+            privatekey = c['key']
+            fullchain = c['certificate']
+            if 'sans' in c['domain'].keys():
+                sans = c['domain']['sans']
             else:
-                directory = directory / name
+                sans = None
+            # sans = c['Domain']['SANs']
+
+            if (args.include and name not in args.include) or (args.exclude and name in args.exclude):
+                continue
+
+            # Decode private key, certificate and chain
+            privatekey = b64decode(privatekey).decode('utf-8')
+            fullchain = b64decode(fullchain).decode('utf-8')
+            start = fullchain.find('-----BEGIN CERTIFICATE-----', 1)
+            cert = fullchain[0:start]
+            chain = fullchain[start:]
+
+            if not args.dry:
+                # Create domain     directory if it doesn't exist
+                directory = Path(args.directory)
                 if not directory.exists():
                     directory.mkdir()
 
-                # Write private key, certificate and chain to file
-                with (directory / 'privkey.pem').open('w') as f:
-                    f.write(privatekey)
+                if args.flat:
+                    # Write private key, certificate and chain to flat files
+                    with (directory / name + '.key').open('w') as f:
+                        f.write(privatekey)
+                    with (directory / name + '.crt').open('w') as f:
+                        f.write(fullchain)
+                    with (directory / name + '.chain.pem').open('w') as f:
+                        f.write(chain)
 
-                with (directory / 'cert.pem').open('w') as f:
-                    f.write(cert)
+                    if sans:
+                        for name in sans:
+                            with (directory / name + '.key').open('w') as f:
+                                f.write(privatekey)
+                            with (directory / name + '.crt').open('w') as f:
+                                f.write(fullchain)
+                            with (directory / name + '.chain.pem').open('w') as f:
+                                f.write(chain)
+                else:
+                    directory = directory / name
+                    if not directory.exists():
+                        directory.mkdir()
 
-                with (directory / 'chain.pem').open('w') as f:
-                    f.write(chain)
+                    # Write private key, certificate and chain to file
+                    with (directory / 'privkey.pem').open('w') as f:
+                        f.write(privatekey)
 
-                with (directory / 'fullchain.pem').open('w') as f:
-                    f.write(fullchain)
+                    with (directory / 'cert.pem').open('w') as f:
+                        f.write(cert)
 
-        print('Extracted certificate for: ' + name +
-              (', ' + ', '.join(sans) if sans else ''))
-        names.append(name)
+                    with (directory / 'chain.pem').open('w') as f:
+                        f.write(chain)
+
+                    with (directory / 'fullchain.pem').open('w') as f:
+                        f.write(fullchain)
+
+            print('Extracted certificate for: ' + name +
+                  (', ' + ', '.join(sans) if sans else ''))
+            names.append(name)
+
     return names
 
 
@@ -225,6 +225,9 @@ if __name__ == "__main__":
     group.add_argument('--exclude', nargs='*')
 
     args = parser.parse_args()
+
+    print('Generating certs')
+    createCerts(args)
 
     print('DEBUG: watching path: ' + str(args.certificate))
     print('DEBUG: output path: ' + str(args.directory))

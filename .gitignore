@@ -1,7 +1,7 @@
 certs/
 certs_flat/
 data/
-
+acme.json
 # Python ignores
 __pycache__/
 *.py[cod]

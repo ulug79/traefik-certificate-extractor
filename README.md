@@ -4,6 +4,13 @@ Forked from [DanielHuisman/traefik-certificate-extractor](https://github.com/Dan
 
 Tool to extract Let's Encrypt certificates from Traefik's ACME storage file. Can automatically restart containers using the docker API.
 
+Note: This version differs from original in that:
+* Changed requirements.txt to use watchdog instead of watchdog3 which doesn't appear to exist any more
+* Support for ACME v1 has been removed.  You must be using the acme_v2 url in your resolver(s)
+* Added support for multiple resolvers
+* An initial dump of the certs will be performed before starting to watch the acme.json file for changes
+* _**Not thoroughly tested**_
+
 ## Installation
 ```shell
 git clone https://github.com/snowmb/traefik-certificate-extractor
