@@ -151,7 +151,7 @@ def createCerts(args):
                         directory.mkdir()
 
                     # Write private key, certificate and chain to file
-                    with (directory / 'privkey.pem').open('w') as f:
+                    with (directory / 'key.pem').open('w') as f:
                         f.write(privatekey)
 
                     with (directory / 'cert.pem').open('w') as f:
