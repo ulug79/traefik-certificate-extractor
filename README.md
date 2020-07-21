@@ -47,6 +47,29 @@ Default file is `./data/acme.json`. The output directories are `./certs` and `./
 
 Latest Docker images located at DockerHub https://hub.docker.com/r/ulug79/traefik-certificate-extractor
 
+Example run:
+
+docker run --name extractor -d \
+  -v /opt/traefik2/acme/:/app/data:ro \
+  -v /opt/certs:/app/certs:rw \
+  -v /var/run/docker.socket:/var/run/docker.sock \
+  ulug79/traefik-certificate-extractor:latest -r
+  
+Mount the whole folder containing the traefik certificate file (acme.json) as /app/data. The extracted certificates are going to be written to /app/certs. The docker socket is used to find any containers with this label: com.github.SnowMB.traefik-certificate-extractor.restart_domain=<DOMAIN>. If the domains of an extracted certificate and the restart domain matches, the container is restarted. Multiple domains can be given seperated by ,.
+
+You can easily use docker-compose to integrate this container into your setup:
+
+...
+services:
+  certs:
+     image: ulug79/traefik-certificate-extractor:latest
+     volumes:
+      - /opt/traefik2/acme:/app/data:ro
+      - /opt/certs:/app/certs:rw
+      - /var/run/docker.sock:/var/run/docker.sock
+     command: -r
+     restart: always
+
 ## Output
 ```
 certs/
