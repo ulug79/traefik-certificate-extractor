@@ -13,7 +13,7 @@ Note: This version differs from original in that:
 
 ## Installation
 ```shell
-git clone https://github.com/snowmb/traefik-certificate-extractor
+git clone https://github.com/ulug79/traefik-certificate-extractor
 cd traefik-certificate-extractor
 ```
 
@@ -44,7 +44,7 @@ Default file is `./data/acme.json`. The output directories are `./certs` and `./
 
 ## Docker
 
-
+Latest Docker images located at DockerHub https://hub.docker.com/r/ulug79/traefik-certificate-extractor
 
 ## Output
 ```
@@ -53,12 +53,12 @@ certs/
         cert.pem
         chain.pem
         fullchain.pem
-        privkey.pem
+        key.pem
     sub.example.nl/
         cert.pem
         chain.pem
         fullchain.pem
-        privkey.pem
+        key.pem
 certs_flat/
     example.com.crt
     example.com.key
