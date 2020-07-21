@@ -44,7 +44,7 @@ Default file is `./data/acme.json`. The output directories are `./certs` and `./
 
 ## Docker
 
-There is no image on hub.docker.com for this fork. Feel free to build your own by cloning this repository and using the included Dockerfile.  It ought to work. Maybe.
+
 
 ## Output
 ```
