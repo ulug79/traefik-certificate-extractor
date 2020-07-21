@@ -9,7 +9,6 @@ Note: This version differs from original in that:
 * Support for ACME v1 has been removed.  You must be using the acme_v2 url in your resolver(s)
 * Added support for multiple resolvers
 * An initial dump of the certs will be performed before starting to watch the acme.json file for changes
-* _**Not thoroughly tested**_. Specifically, I don't know if SANs work since I don't use them.
 * Tested on Traefik 2.2.x
 
 ## Installation
@@ -56,19 +55,6 @@ docker run --name extractor -d \
   ulug79/traefik-certificate-extractor:latest -r
   
 Mount the whole folder containing the traefik certificate file (acme.json) as /app/data. The extracted certificates are going to be written to /app/certs. The docker socket is used to find any containers with this label: com.github.SnowMB.traefik-certificate-extractor.restart_domain=<DOMAIN>. If the domains of an extracted certificate and the restart domain matches, the container is restarted. Multiple domains can be given seperated by ,.
-
-You can easily use docker-compose to integrate this container into your setup:
-
-...
-services:
-  certs:
-     image: ulug79/traefik-certificate-extractor:latest
-     volumes:
-      - /opt/traefik2/acme:/app/data:ro
-      - /opt/certs:/app/certs:rw
-      - /var/run/docker.sock:/var/run/docker.sock
-     command: -r
-     restart: always
 
 ## Output
 ```
