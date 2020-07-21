@@ -1,7 +1,5 @@
 # Traefik Certificate Extractor
 
-Forked from [SnowMB/traefik-certificate-extractor](https://github.com/SnowMB/traefik-certificate-extractor)
-
 Forked from [KurzonDax/traefik-certificate-extractor](https://github.com/KurzonDax/traefik-certificate-extractor)
 
 Tool to extract Let's Encrypt certificates from Traefik's ACME storage file. Can automatically restart containers using the docker API.
