@@ -10,6 +10,7 @@ Note: This version differs from original in that:
 * Added support for multiple resolvers
 * An initial dump of the certs will be performed before starting to watch the acme.json file for changes
 * _**Not thoroughly tested**_. Specifically, I don't know if SANs work since I don't use them.
+* Tested on Traefik 2.2.x
 
 ## Installation
 ```shell
