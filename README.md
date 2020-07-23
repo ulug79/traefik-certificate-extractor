@@ -12,12 +12,14 @@ Note: This version differs from original in that:
 * Tested on Traefik 2.2.x
 
 ## Installation
+
 ```shell
 git clone https://github.com/ulug79/traefik-certificate-extractor
 cd traefik-certificate-extractor
 ```
 
 ## Usage
+
 ```shell
 usage: extractor.py [-h] [-c CERTIFICATE] [-d DIRECTORY] [-f] [-r] [--dry-run]
                     [--include [INCLUDE [INCLUDE ...]] | --exclude
@@ -53,6 +55,7 @@ docker run --name extractor -d -v /opt/traefik2/acme/:/app/data:ro -v /opt/certs
 Mount the whole folder containing the traefik certificate file (acme.json) as /app/data. The extracted certificates are going to be written to /app/certs. The docker socket is used to find any containers with this label: com.github.SnowMB.traefik-certificate-extractor.restart_domain=<DOMAIN>. If the domains of an extracted certificate and the restart domain matches, the container is restarted. Multiple domains can be given seperated by ,.
 
 ## Output
+
 ```
 certs/
     example.com/
