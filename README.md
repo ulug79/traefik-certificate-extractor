@@ -9,7 +9,7 @@ Note: This version differs from original in that:
 * Support for ACME v1 has been removed.  You must be using the acme_v2 url in your resolver(s)
 * Added support for multiple resolvers
 * An initial dump of the certs will be performed before starting to watch the acme.json file for changes
-* Tested on Traefik 2.2.x
+* Tested on Traefik 2.2.x/2.3.x
 
 ## Installation
 
